@@ -88,15 +88,18 @@ def oauth2_authorize(request):
 			next_param = quote(request.get_full_path(), safe='')
 			login_url = reverse('login') + f'?next={next_param}'
 			return redirect(login_url)
-		# Hiển thị xác nhận cấp quyền
-		scope_list = scope.split() if scope else []
-		return render(request, 'oauth2_service/authorize_confirm.html', {
-			'client': client,
-			'redirect_uri': redirect_uri,
-			'scope': scope,
-			'scope_list': scope_list,
-			'state': state,
-		})
+		# Bỏ qua xác nhận, tự động cấp mã xác nhận
+		code = get_random_string(32)
+		AUTHORIZATION_CODES[code] = {
+			"user_id": request.user.id,
+			"client_id": client_id,
+			"scope": scope,
+			"expires": datetime.datetime.now() + datetime.timedelta(minutes=5)
+		}
+		params = {"code": code}
+		if state:
+			params["state"] = state
+		return redirect(f"{redirect_uri}?{urlencode(params)}")
 	elif request.method == "POST":
 		client_id = request.POST.get("client_id")
 		redirect_uri = request.POST.get("redirect_uri")
