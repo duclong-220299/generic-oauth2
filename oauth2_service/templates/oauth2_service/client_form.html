@@ -1,33 +1,70 @@
 {% extends 'oauth2_service/base.html' %}
+{% load form_tags %}
 {% block content %}
-<h2>{{ action }} Client</h2>
-<form method="post" class="card p-4 shadow-sm">
-    {% csrf_token %}
-    <div class="mb-3">
-        {{ form.name.label_tag }}
-        {{ form.name }}
-    </div>
-    <div class="mb-3">
-        {{ form.redirect_uris.label_tag }}
-        {{ form.redirect_uris }}
-    </div>
-    <div class="mb-3">
-        <label><strong>Phạm vi truy cập (scopes):</strong></label>
-        {% for checkbox in form.scopes %}
-            <div class="form-check">
-                {{ checkbox.tag }} {{ checkbox.choice_label }}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-7">
+        <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
+            <div class="card-body p-5">
+                <h2 class="text-gradient fw-bold mb-4 text-center">
+                    <i class="bi bi-pencil-square"></i> {{ action }} Client
+                </h2>
+                <form method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">{{ form.name.label }}</label>
+                        {{ form.name|add_class:'form-control form-control-lg' }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">{{ form.redirect_uris.label }}</label>
+                        {{ form.redirect_uris|add_class:'form-control' }}
+                        <small class="form-text text-muted">Nhập mỗi URI trên một dòng.</small>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Phạm vi truy cập (scopes):</label>
+                        <div class="row">
+                            {% for checkbox in form.scopes %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-check">
+                                        {{ checkbox.tag }}
+                                        <label class="form-check-label">{{ checkbox.choice_label }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            {{ form.is_active|add_class:'form-check-input' }}
+                            <label class="form-check-label">{{ form.is_active.label }}</label>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-2">
+                        <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm">
+                            <i class="bi bi-save"></i> {{ action }}
+                        </button>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'client_list' %}" class="btn btn-outline-secondary px-4 shadow-sm">
+                                <i class="bi bi-x-circle"></i> Về danh sách client
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-house-door"></i> Về trang chủ
+                            </a>
+                        </div>
+                    </div>
+                </form>
             </div>
-        {% endfor %}
-    </div>
-    <div class="mb-3">
-        {{ form.is_active.label_tag }} {{ form.is_active }}
-    </div>
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <button type="submit" class="btn btn-primary">{{ action }}</button>
-        <div>
-            <a href="{% url 'client_list' %}" class="btn btn-outline-secondary me-2">Về danh sách client</a>
-            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Về trang chủ</a>
         </div>
     </div>
-</form>
+</div>
+<style>
+    .text-gradient {
+        background: linear-gradient(90deg, #0d6efd 40%, #6610f2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+<!-- Bootstrap Icons & Animate.css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 {% endblock %}

@@ -1,37 +1,125 @@
+
 {% extends 'oauth2_service/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Danh sách Client</h2>
-    <a href="{% url 'client_create' %}" class="btn btn-success btn-lg">+ Tạo client mới</a>
+<div class="row justify-content-center mt-4">
+    <div class="col-12 col-lg-11">
+        <div class="wow-header mb-4 p-4 rounded-4 text-center shadow-lg" style="background: linear-gradient(90deg, #0d6efd 0%, #6610f2 100%); color: #fff; position: relative; overflow: hidden;">
+            <h1 class="display-5 fw-bold mb-2 animate__animated animate__fadeInDown">
+                <i class="bi bi-server"></i> Danh sách Client
+            </h1>
+            <p class="lead mb-0 animate__animated animate__fadeInUp">Quản lý các ứng dụng OAuth2 của bạn một cách chuyên nghiệp và bảo mật.</p>
+            <div class="position-absolute top-0 end-0 opacity-25" style="font-size:120px; pointer-events:none;">
+                <i class="bi bi-cloud-lock"></i>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'client_create' %}" class="btn btn-gradient btn-lg px-4 shadow-sm animate__animated animate__pulse animate__infinite">
+                <i class="bi bi-plus-circle"></i> Tạo client mới
+            </a>
+        </div>
+        <div class="shadow-lg border-0 mb-4 animate__animated animate__fadeInUp wow-card">
+            <div class="card-body px-0 py-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 w-100 wow-table">
+                        <thead class="table-gradient text-white">
+                            <tr>
+                                <th class="text-center">Tên</th>
+                                <th class="text-center">Client ID</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Ngày tạo</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for client in clients %}
+                            <tr class="align-middle wow-row">
+                                <td class="text-center">
+                                    <a href="{% url 'client_detail' client.pk %}" class="fw-bold text-decoration-none text-dark">
+                                        <i class="bi bi-key-fill text-primary"></i> {{ client.name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info text-dark fs-6">{{ client.client_id }}</span>
+                                </td>
+                                <td class="text-center">
+                                    {% if client.is_active %}
+                                        <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle-fill"></i> Hoạt động</span>
+                                    {% else %}
+                                        <span class="badge bg-danger px-3 py-2"><i class="bi bi-x-circle-fill"></i> Vô hiệu</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-secondary">{{ client.created_at|date:"d/m/Y H:i" }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'client_update' client.pk %}" class="btn btn-sm btn-warning px-3 me-1">
+                                        <i class="bi bi-pencil-square"></i> Sửa
+                                    </a>
+                                    <a href="{% url 'client_delete' client.pk %}" class="btn btn-sm btn-danger px-3">
+                                        <i class="bi bi-trash3"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-info-circle"></i> Chưa có client nào.
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-center">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-house-door"></i> Về trang chủ
+            </a>
+        </div>
+
+        </div>
 </div>
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Tên</th>
-            <th>Client ID</th>
-            <th>Trạng thái</th>
-            <th>Ngày tạo</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for client in clients %}
-        <tr>
-            <td><a href="{% url 'client_detail' client.pk %}" class="text-decoration-none fw-bold">{{ client.name }}</a></td>
-            <td><code>{{ client.client_id }}</code></td>
-            <td>{% if client.is_active %}<span class="badge bg-success">Hoạt động</span>{% else %}<span class="badge bg-danger">Vô hiệu</span>{% endif %}</td>
-            <td>{{ client.created_at|date:"d/m/Y H:i" }}</td>
-            <td>
-                <a href="{% url 'client_update' client.pk %}" class="btn btn-sm btn-warning">Sửa</a>
-                <a href="{% url 'client_delete' client.pk %}" class="btn btn-sm btn-danger">Xóa</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5" class="text-center">Chưa có client nào.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-<div class="mt-4">
-    <a href="{% url 'home' %}" class="btn btn-outline-secondary">Về trang chủ</a>
-</div>
+<style>
+    .wow-header {
+        box-shadow: 0 8px 32px 0 rgba(13,110,253,0.15);
+        border-radius: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    .btn-gradient {
+        background: linear-gradient(90deg, #0d6efd 40%, #6610f2 100%);
+        color: #fff;
+        border: none;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .btn-gradient:hover {
+        box-shadow: 0 4px 24px 0 #6610f299;
+        transform: translateY(-2px) scale(1.04);
+        color: #fff;
+    }
+    .wow-card {
+        border-radius: 1.25rem;
+        overflow: hidden;
+    }
+    .wow-table {
+        border-radius: 1rem;
+        overflow: hidden;
+        background: #fff;
+    }
+    .table-gradient {
+        background: linear-gradient(90deg, #0d6efd 40%, #6610f2 100%);
+        color: #fff;
+        border: none;
+    }
+    .wow-row:hover {
+        background: #e3f0ff !important;
+        transition: background 0.2s;
+    }
+</style>
+<!-- Bootstrap Icons & Animate.css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 {% endblock %}

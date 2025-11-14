@@ -1,18 +1,55 @@
+
 {% extends 'oauth2_service/base.html' %}
 {% block content %}
-<div class="card p-4 shadow-sm mt-5 text-center">
-    <h2>Chào mừng đến với OAuth2 Service</h2>
-    {% if user.is_authenticated %}
-        <p>Xin chào, <strong>{{ user.username }}</strong>!</p>
-        <p>Email: {{ user.email }}</p>
-        <a href="{% url 'client_list' %}" class="btn btn-primary">Quản lý Client OAuth2</a>
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger ms-2">Đăng xuất</button>
-        </form>
-    {% else %}
-        <p>Bạn chưa đăng nhập.</p>
-        <a href="{% url 'login' %}" class="btn btn-success">Đăng nhập quản trị</a>
-    {% endif %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card p-5 shadow-lg border-0 wow fadeInUp text-center" style="background: linear-gradient(135deg, #e3f0ff 0%, #f9f9f9 100%);">
+            <div class="mb-4">
+                <img src="https://cdn-icons-png.flaticon.com/512/2917/2917999.png" alt="OAuth2 Logo" width="80" class="mb-3" style="filter: drop-shadow(0 2px 8px #0d6efd33);">
+                <h1 class="display-5 fw-bold text-primary mb-2">Chào mừng đến với <span class="text-gradient">OAuth2 Service</span></h1>
+                <p class="lead text-secondary">Nền tảng quản lý xác thực hiện đại, bảo mật và dễ sử dụng.</p>
+            </div>
+            {% if user.is_authenticated %}
+                <div class="alert alert-success d-flex align-items-center justify-content-center mb-4" role="alert">
+                    <i class="bi bi-person-circle fs-3 me-2"></i>
+                    <div>
+                        Xin chào, <strong>{{ user.username }}</strong>!<br>
+                        <span class="small text-muted">{{ user.email }}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    {% if user.is_staff or user.is_superuser %}
+                    <a href="{% url 'client_list' %}" class="btn btn-lg btn-primary px-4 shadow-sm">
+                        <i class="bi bi-shield-lock"></i> Quản lý Client OAuth2
+                    </a>
+                    {% endif %}
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-lg btn-outline-danger px-4 shadow-sm">
+                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="alert alert-warning d-flex align-items-center justify-content-center mb-4" role="alert">
+                    <i class="bi bi-exclamation-circle fs-3 me-2"></i>
+                    <div>Bạn chưa đăng nhập.</div>
+                </div>
+                <a href="{% url 'login' %}" class="btn btn-lg btn-success px-4 shadow-sm">
+                    <i class="bi bi-person-check"></i> Đăng nhập
+                </a>
+            {% endif %}
+        </div>
+    </div>
 </div>
+<style>
+    .text-gradient {
+        background: linear-gradient(90deg, #0d6efd 40%, #6610f2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 {% endblock %}

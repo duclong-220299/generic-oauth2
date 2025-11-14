@@ -1,9 +1,36 @@
+
 {% extends 'oauth2_service/base.html' %}
 {% block content %}
-<div class="card p-4 shadow-sm mt-5 text-center">
-    <h2>Đã đăng xuất</h2>
-    <p>Bạn đã đăng xuất khỏi hệ thống.</p>
-    <a href="{% url 'login' %}" class="btn btn-success">Đăng nhập lại</a>
-    <a href="{% url 'home' %}" class="btn btn-secondary ms-2">Về trang chủ</a>
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-6">
+        <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
+            <div class="card-body p-5 text-center">
+                <h2 class="text-gradient fw-bold mb-4">
+                    <i class="bi bi-box-arrow-right"></i> Đã đăng xuất
+                </h2>
+                <div class="alert alert-info d-flex align-items-center justify-content-center mb-4" role="alert">
+                    <i class="bi bi-info-circle fs-3 me-2"></i>
+                    <div>Bạn đã đăng xuất khỏi hệ thống.</div>
+                </div>
+                <a href="{% url 'login' %}" class="btn btn-success btn-lg px-4 shadow-sm me-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập lại
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-secondary btn-lg px-4">
+                    <i class="bi bi-house-door"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+<style>
+    .text-gradient {
+        background: linear-gradient(90deg, #0d6efd 40%, #6610f2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+<!-- Bootstrap Icons & Animate.css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 {% endblock %}

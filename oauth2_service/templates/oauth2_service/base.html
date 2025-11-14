@@ -9,36 +9,47 @@
     <link rel="stylesheet" href="{% static 'oauth2_service/style.css' %}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">OAuth2 Service</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'client_list' %}">Quản lý Client</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'client_create' %}">Đăng ký Client mới</a>
-                    </li>
+        <nav class="navbar navbar-dark bg-primary mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'home' %}">OAuth2 Service</a>
+                <div class="d-flex align-items-center ms-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link">Xin chào, <strong>{{ user.username }}</strong></span>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="nav-link btn btn-link" style="padding:0;">Đăng xuất</button>
-                            </form>
-                        </li>
+                        <span class="text-white me-2 fw-semibold">{{ user.username }}</span>
+                        <div class="dropdown" id="avatarDropdown" style="position:relative;">
+                            <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}&background=0d6efd&color=fff&size=48{% endif %}"
+                                     alt="Avatar" class="rounded-circle border border-2 border-white shadow-sm" width="40" height="40"
+                                     style="cursor:pointer;" oncontextmenu="showUserMenu(event)">
+                            <div id="userMenu" class="dropdown-menu dropdown-menu-end shadow" style="display:none; position:absolute; top:45px; right:0; min-width:180px;">
+                                {% if user.is_staff or user.is_superuser %}
+                                <a href="/admin/" class="dropdown-item"><i class="bi bi-shield-lock"></i> Trang quản trị</a>
+                                <div class="dropdown-divider"></div>
+                                {% endif %}
+                                <form action="{% url 'logout' %}" method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                                </form>
+                            </div>
+                        </div>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Đăng nhập</a>
-                        </li>
+                        <a class="btn btn-light" href="{% url 'login' %}"><i class="bi bi-person-circle"></i> Đăng nhập</a>
                     {% endif %}
-                </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+        <script>
+            function showUserMenu(e) {
+                e.preventDefault();
+                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
+                var menu = document.getElementById('userMenu');
+                menu.style.display = 'block';
+                document.addEventListener('click', function hideMenu(ev) {
+                    if (!menu.contains(ev.target)) {
+                        menu.style.display = 'none';
+                        document.removeEventListener('click', hideMenu);
+                    }
+                });
+            }
+        </script>
     <div class="container">
         {% block content %}{% endblock %}
     </div>

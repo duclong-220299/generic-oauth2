@@ -19,21 +19,100 @@ def home():
     token_data = session.get('token_data')
     last_logs = session.get('last_logs', [])
     return render_template_string('''
-    <h2>Client Demo Flask</h2>
-    {% if userinfo %}
-        <p>Đã đăng nhập: {{ userinfo['username'] }} ({{ userinfo['email'] }})</p>
-        <a href="{{ url_for('logout') }}">Đăng xuất</a>
-    {% else %}
-        <a href="{{ url_for('login') }}">Đăng nhập với OAuth2</a>
-    {% endif %}
-    <hr>
-    <h4>Token Response</h4>
-    <pre>{{ token_data if token_data else 'Chưa có dữ liệu' }}</pre>
-    <h4>Userinfo Response</h4>
-    <pre>{{ userinfo if userinfo else 'Chưa có dữ liệu' }}</pre>
-    <h4>Logs</h4>
-    <pre>{% for log in last_logs %}{{ log }}
-{% endfor %}</pre>
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Client Demo Flask OAuth2</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <style>
+            body {
+                background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+                min-height: 100vh;
+            }
+            .card {
+                max-width: 700px;
+                margin: 40px auto;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+                border: none;
+            }
+            .pre-scroll {
+                max-height: 250px;
+                overflow-y: auto;
+                background: #212529;
+                color: #f8f9fa;
+                padding: 1em;
+                border-radius: 8px;
+                font-size: 0.95em;
+            }
+            .copy-btn {
+                float: right;
+                margin-top: -8px;
+            }
+            .gradient-header {
+                background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+                color: #fff;
+                border-radius: 18px 18px 0 0;
+                padding: 32px 0 16px 0;
+                box-shadow: 0 4px 16px rgba(106,17,203,0.08);
+            }
+            .icon-status {
+                font-size: 2em;
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card shadow">
+            <div class="gradient-header text-center">
+                <i class="fa-solid fa-shield-halved fa-bounce"></i>
+                <h2 class="mb-2 mt-2">Client Demo Flask OAuth2</h2>
+            </div>
+            <div class="card-body">
+                {% if userinfo %}
+                    <div class="alert alert-success text-start">
+                        <i class="fa-solid fa-circle-check text-success icon-status"></i>
+                        <strong>Đã đăng nhập:</strong> {{ userinfo['username'] }}<br>
+                        <strong>Email:</strong> {{ userinfo['email'] }}
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger mb-3"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+                {% else %}
+                    <div class="alert alert-warning"><i class="fa-solid fa-circle-exclamation text-warning icon-status"></i> Bạn chưa đăng nhập.</div>
+                    <a href="{{ url_for('login') }}" class="btn btn-success mb-3"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập với OAuth2</a>
+                {% endif %}
+                <hr>
+                <div class="mb-4">
+                    <h5 class="mt-4 d-inline">Token Response</h5>
+                    {% if token_data %}
+                        <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToken()"><i class="fa-regular fa-copy"></i> Copy</button>
+                    {% endif %}
+                    <div class="pre-scroll" id="token-box">{{ token_data if token_data else 'Chưa có dữ liệu' }}</div>
+                </div>
+                <div class="mb-4">
+                    <h5 class="mt-4">Userinfo Response</h5>
+                    <div class="pre-scroll">{{ userinfo if userinfo else 'Chưa có dữ liệu' }}</div>
+                </div>
+                <div class="mb-4">
+                    <h5 class="mt-4">Logs</h5>
+                    <div class="pre-scroll">{% for log in last_logs %}{{ log }}<br>{% endfor %}</div>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center mt-4 mb-2 text-muted">&copy; {{ 2025 }} <i class="fa-solid fa-bolt"></i> Client Demo Flask OAuth2</footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+        function copyToken() {
+            var tokenBox = document.getElementById('token-box');
+            var text = tokenBox.innerText;
+            navigator.clipboard.writeText(text);
+            alert('Đã copy token!');
+        }
+        </script>
+    </body>
+    </html>
     ''', userinfo=userinfo, token_data=token_data, last_logs=last_logs)
 
 @app.route('/login')
