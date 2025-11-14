@@ -1,0 +1,15 @@
+{% extends 'oauth2_service/base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm">
+            <h2 class="mb-4">Đăng nhập quản trị</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

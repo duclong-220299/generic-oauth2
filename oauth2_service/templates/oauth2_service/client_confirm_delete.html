@@ -1,0 +1,13 @@
+{% extends 'oauth2_service/base.html' %}
+{% block content %}
+<h2>Xóa Client</h2>
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa client <strong>{{ client.name }}</strong> không?
+</div>
+<form method="post" class="mb-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="{% url 'client_list' %}" class="btn btn-outline-secondary ms-2">Hủy</a>
+</form>
+<a href="{% url 'home' %}" class="btn btn-outline-secondary">Về trang chủ</a>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'oauth2_service/base.html' %}
+{% block content %}
+<div class="card p-4 shadow-sm mt-5 text-center">
+    <h2>Đã đăng xuất</h2>
+    <p>Bạn đã đăng xuất khỏi hệ thống.</p>
+    <a href="{% url 'login' %}" class="btn btn-success">Đăng nhập lại</a>
+    <a href="{% url 'home' %}" class="btn btn-secondary ms-2">Về trang chủ</a>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+# Python
+*.pyc
+__pycache__/
+.Python/
+venv/
+env/
+.env
+pip-log.txt
+pip-delete-this-arg.txt
+
+# Django
+*.sqlite3
+media/
+static/
+/migrations/*
+!/migrations/__init__.py
+!*/migrations/__init__.py
+
+# VS Code
+.vscode/
+
+# Operating System specific
+.DS_Store
+Thumbs.db

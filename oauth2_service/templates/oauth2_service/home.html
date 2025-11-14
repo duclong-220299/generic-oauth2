@@ -1,0 +1,18 @@
+{% extends 'oauth2_service/base.html' %}
+{% block content %}
+<div class="card p-4 shadow-sm mt-5 text-center">
+    <h2>Chào mừng đến với OAuth2 Service</h2>
+    {% if user.is_authenticated %}
+        <p>Xin chào, <strong>{{ user.username }}</strong>!</p>
+        <p>Email: {{ user.email }}</p>
+        <a href="{% url 'client_list' %}" class="btn btn-primary">Quản lý Client OAuth2</a>
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger ms-2">Đăng xuất</button>
+        </form>
+    {% else %}
+        <p>Bạn chưa đăng nhập.</p>
+        <a href="{% url 'login' %}" class="btn btn-success">Đăng nhập quản trị</a>
+    {% endif %}
+</div>
+{% endblock %}
