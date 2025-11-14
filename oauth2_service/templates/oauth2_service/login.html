@@ -23,10 +23,15 @@
                         <label class="form-label fw-semibold">Mật khẩu</label>
                         {{ form.password|add_class:'form-control form-control-lg' }}
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg px-4 w-100 shadow-sm">
+                    <button type="submit" class="btn btn-primary btn-lg px-4 w-100 shadow-sm mb-3">
                         <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
                     </button>
                 </form>
+                <div class="text-center mt-3">
+                    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next|urlencode }}" class="btn btn-danger btn-lg w-100 shadow-sm">
+                        <i class="bi bi-google"></i> Đăng nhập bằng Google
+                    </a>
+                </div>
             </div>
         </div>
     </div>
