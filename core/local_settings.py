@@ -1,0 +1,2 @@
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '74342617718-lcn9ngc1rgnvv6nlkk52ueggn473a4ir.apps.googleusercontent.com'  # Thay bằng client id thực tế
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Thay bằng client secret thực tế
