@@ -6,6 +6,7 @@ from .models import Client, AuthorizationCode, AccessToken
 from .forms import ClientForm
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.utils.timezone import now
 
 def staff_required(view_func):
 	return login_required(user_passes_test(lambda u: u.is_staff)(view_func))
@@ -156,20 +157,19 @@ def oauth2_token(request):
 
 @csrf_exempt
 def userinfo(request):
-	auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-	if auth_header.startswith('Bearer '):
-		token = auth_header[7:]
-		token_data = ACCESS_TOKENS.get(token)
-		if token_data and token_data["expires"] > datetime.datetime.now():
-			user = get_user_model().objects.filter(id=token_data["user_id"]).first()
-			if user:
-				return JsonResponse({
-					"sub": user.id,
-					"username": user.username,
-					"email": user.email,
-					"scope": token_data["scope"]
-				})
-	return JsonResponse({"error": "Unauthorized"}, status=401)
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:]
+        token_data = AccessToken.objects.filter(token=token).first()
+        if token_data and not token_data.is_expired():
+            user = token_data.user
+            return JsonResponse({
+                "sub": user.id,
+                "username": user.username,
+                "email": user.email,
+                "scope": token_data.scope
+            })
+    return JsonResponse({"error": "Unauthorized"}, status=401)
 
 
 # --- Custom Auth Views ---
