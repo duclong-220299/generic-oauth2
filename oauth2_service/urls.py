@@ -18,6 +18,10 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='oauth2_service/login.html'), name='login'),
     path('logout/', LogoutViewPOST.as_view(next_page='home'), name='logout'),
 
+    # Custom Auth endpoints
+    path('custom-auth2/', views.custom_auth_login, name='custom_auth_login'),
+    path('oauth2/callback', views.custom_auth_callback, name='custom_auth_callback'),
+
     # OAuth2 endpoints
     path('oauth2/authorize', views.oauth2_authorize, name='oauth2_authorize'),
     path('oauth2/token', views.oauth2_token, name='oauth2_token'),

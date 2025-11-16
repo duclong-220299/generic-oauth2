@@ -43,6 +43,17 @@ INSTALLED_APPS = [
 ]
 # Application definition
 
+# Custom OAuth2 settings
+OAUTH2_SERVER = 'http://server-oauth2'  # Thay bằng URL của server OAuth2
+AUTHORIZE_URL = f"{OAUTH2_SERVER}/oauth2/authorize"
+TOKEN_URL = f"{OAUTH2_SERVER}/oauth2/token"
+USERINFO_URL = f"{OAUTH2_SERVER}/userinfo"
+CLIENT_ID = 'xxx'  # Thay bằng client id thực tế
+CLIENT_SECRET = 'xxxx'  # Thay bằng client secret thực tế
+REDIRECT_URI = 'http://localhost:8000/oauth2/callback'  # Thay bằng URI callback thực tế
+SCOPES = 'profile'  # Thay bằng phạm vi truy cập thực tế
+
+
 # Social Auth settings
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
@@ -53,7 +64,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'client-id'  # Thay bằng client id thực tế
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'client-secret'  # Thay bằng client secret thực tế
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
-
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 TEMPLATES = [
@@ -163,6 +173,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Import local settings if present
+
 try:
     from .local_settings import *   
 except ImportError:

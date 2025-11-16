@@ -169,3 +169,87 @@ def userinfo(request):
 					"scope": token_data["scope"]
 				})
 	return JsonResponse({"error": "Unauthorized"}, status=401)
+
+
+# --- Custom Auth Views ---
+import requests
+from django.conf import settings
+from django.contrib.auth import login
+
+def custom_auth_login(request):
+    """
+    Redirects the user to the custom OAuth2 provider for authorization.
+    """
+    next_url = request.GET.get('next', reverse('home'))
+
+    params = {
+        'client_id': settings.CLIENT_ID,
+        'redirect_uri': settings.REDIRECT_URI,
+        'response_type': 'code',
+        'scope': settings.SCOPES,
+		'state': next_url,
+    }
+
+    auth_url = f"{settings.AUTHORIZE_URL}?{urlencode(params)}"
+    return redirect(auth_url)
+
+@csrf_exempt
+def custom_auth_callback(request):
+    """
+    Handles the callback from the custom OAuth2 provider.
+    """
+    code = request.GET.get('code')
+    if not code:
+        return HttpResponse("Authorization code not found.", status=400)
+
+    # --- Step 1: Exchange authorization code for access token ---
+    token_data = {
+        'client_id': settings.CLIENT_ID,
+        'client_secret': settings.CLIENT_SECRET,
+        'code': code,
+        'redirect_uri': settings.REDIRECT_URI,
+        'grant_type': 'authorization_code',
+    }
+    try:
+        token_response = requests.post(settings.TOKEN_URL, data=token_data)
+        token_response.raise_for_status()  # Raise an exception for bad status codes
+        token_json = token_response.json()
+        access_token = token_json.get('access_token')
+        if not access_token:
+            return HttpResponse("Access token not found in response.", status=400)
+    except requests.exceptions.RequestException as e:
+        return HttpResponse(f"Failed to retrieve access token: {e}", status=400)
+
+    # --- Step 2: Use access token to get user info ---
+    headers = {'Authorization': f'Bearer {access_token}'}
+    try:
+        userinfo_response = requests.get(settings.USERINFO_URL, headers=headers)
+        userinfo_response.raise_for_status()
+        user_info = userinfo_response.json()
+    except requests.exceptions.RequestException as e:
+        return HttpResponse(f"Failed to retrieve user info: {e}", status=400)
+
+    # --- Step 3: Log in or create the user ---
+    User = get_user_model()
+    email = user_info.get('email')
+    username = user_info.get('username', email) # Fallback to email if username is not present
+
+    if not email:
+        return HttpResponse("Email not found in user info.", status=400)
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        # Create a new user if they don't exist
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+        )
+        # You might want to set a random password for users created this way
+        user.set_unusable_password()
+        user.save()
+
+    # Log the user in
+    login(request, user)
+
+    return redirect(reverse('home'))

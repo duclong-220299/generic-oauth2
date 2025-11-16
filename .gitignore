@@ -10,6 +10,7 @@ pip-delete-this-arg.txt
 
 # Django
 *.sqlite3
+local_settings.py
 media/
 static/
 /migrations/*
